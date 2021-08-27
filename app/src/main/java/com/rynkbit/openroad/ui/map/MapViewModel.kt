@@ -1,4 +1,4 @@
-package com.rynkbit.openroad.map
+package com.rynkbit.openroad.ui.map
 
 import androidx.lifecycle.ViewModel
 
