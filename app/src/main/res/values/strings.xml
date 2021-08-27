@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">OpenRoad</string>
+    <string name="navigation_options">Navigation options</string>
+    <string name="begin">Begin</string>
+    <string name="end">End</string>
+    <string name="route">Route</string>
 </resources>

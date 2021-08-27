@@ -7,7 +7,7 @@ import org.osmdroid.views.MapView
 
 class Map(val mapView: MapView) {
     init {
-        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
         mapView.zoomController.setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT)
         mapView.setMultiTouchControls(true)
         mapView.controller.setZoom(19.0)

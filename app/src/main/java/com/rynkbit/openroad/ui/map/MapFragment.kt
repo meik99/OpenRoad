@@ -16,8 +16,17 @@ import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
 import com.rynkbit.openroad.R
 import com.rynkbit.openroad.logic.map.Compass
+import kotlinx.android.synthetic.main.map_fragment.*
+import org.osmdroid.bonuspack.location.GeocoderMapzen
+import org.osmdroid.bonuspack.location.GeocoderNominatim
+import org.osmdroid.bonuspack.routing.OSRMRoadManager
+import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.config.Configuration
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import java.io.IOException
+import java.util.*
+import java.util.concurrent.Executors
 
 
 class MapFragment : Fragment() {
@@ -51,6 +60,45 @@ class MapFragment : Fragment() {
         Permissions(this).apply {
             listener = Permissions.PermissionsListener { setInitialLocation() }
             askRequiredPermissions(getRequiredPermissions())
+        }
+
+        btnCalcRoute.setOnClickListener {
+            val begin = editBegin.text.toString()
+            val end = editEnd.text.toString()
+
+            Executors.newSingleThreadExecutor().execute {
+                try {
+                    val geocoder =  GeocoderNominatim(
+                        Locale.getDefault(),
+                        "OpenRoad"
+                    )
+
+                    val beginAddresses = geocoder.getFromLocationName(begin, 10)
+                    val endAddresses = geocoder.getFromLocationName(end, 10)
+
+                    if (beginAddresses.isNotEmpty() && endAddresses.isNotEmpty()) {
+                        val waypoints = arrayListOf(
+                            GeoPoint(beginAddresses[0].latitude, beginAddresses[0].longitude),
+                            GeoPoint(endAddresses[0].latitude, endAddresses[0].longitude)
+                        )
+
+                        val roadManager = OSRMRoadManager(requireContext())
+                        val roads = roadManager.getRoad(waypoints)
+
+                        if (roads != null) {
+                            val roadOverlay = RoadManager.buildRoadOverlay(roads)
+                            map.mapView.overlays.add(roadOverlay)
+
+                            requireActivity().runOnUiThread {
+                                map.mapView.invalidate()
+                            }
+                        }
+                    }
+                }catch (e: IOException) {
+                    Log.e(TAG, "onViewCreated: ${e.message}", e)
+                }
+            }
+
         }
     }
 
@@ -88,8 +136,8 @@ class MapFragment : Fragment() {
                 LocationServices.getFusedLocationProviderClient(requireContext())
         try {
             val locationRequest = LocationRequest.create()
-            locationRequest.interval = 100
-            locationRequest.fastestInterval = 10
+            locationRequest.interval = 500
+            locationRequest.fastestInterval = 100
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
             fusedLocationClient.requestLocationUpdates(
