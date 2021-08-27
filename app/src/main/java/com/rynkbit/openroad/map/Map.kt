@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.LocationRequest
@@ -24,6 +25,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.util.concurrent.Executors
@@ -67,18 +69,25 @@ class Map : Fragment() {
 
 
     private fun setInitialLocation() {
-//        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-//        fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token).addOnSuccessListener {
-//
-//            map.controller.setCenter(GeoPoint(it.latitude, it.longitude))
-//            map.postInvalidate()
-//            map.invalidate()
-//        }
-        val overlay = MyLocationNewOverlay(GpsMyLocationProvider(requireContext()), map)
-        overlay.enableMyLocation()
-        overlay.enableFollowLocation()
-        map.overlays.add(overlay)
-        map.controller.setZoom(19.0)
+        try {
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+            fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token).addOnSuccessListener {
+                val point = GeoPoint(it.latitude, it.longitude)
+                val marker = Marker(map)
+
+                marker.position = point
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_TOP)
+                marker.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_expand_less_24, requireActivity().theme)
+
+                map.overlays.add(marker)
+                map.controller.setCenter(point)
+                map.controller.setZoom(19.0)
+                map.postInvalidate()
+                map.invalidate()
+            }
+        } catch (e: SecurityException) {
+            Log.e(Map::class.java.simpleName, e.message ?: "")
+        }
     }
 
     private fun askRequiredPermissions(requiredPermissions: List<String>) {
