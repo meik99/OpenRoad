@@ -1,8 +1,8 @@
 package com.rynkbit.openroad
 
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -13,8 +13,7 @@ import org.junit.runner.RunWith
 
 import org.junit.Assert.*
 import org.junit.Rule
-
-
+import java.util.*
 
 
 /**
@@ -37,7 +36,27 @@ class SetupScenario {
 
         onView(withId(R.id.fabRoute)).perform(click())
         onView(withId(R.id.btnClearText)).perform(click())
-        onView(withId(R.id.editStart)).perform(typeText(""))
+        onView(withId(R.id.editStart)).perform(typeText(BuildConfig.TEST_START_ADDRESS))
+
+        Thread.sleep(3600000L)
+    }
+
+    @Test
+    fun calculateRoute() {
+        // Context of the app under test.
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        assertEquals("com.rynkbit.openroad", appContext.packageName)
+
+        onView(withId(R.id.fabRoute)).perform(click())
+        onView(withId(R.id.btnClearText)).perform(click())
+        onView(withId(R.id.editStart)).perform(typeText(BuildConfig.TEST_START_ADDRESS))
+        Thread.sleep(2000)
+        onView(withId(R.id.fabSetEndpoint)).perform(click())
+        Thread.sleep(1000)
+
+        onView(withId(R.id.editEnd)).perform(typeText(BuildConfig.TEST_END_ADDRESS))
+        Thread.sleep(1000)
+        onView(withId(R.id.fabStartNavigation)).perform(click())
 
         Thread.sleep(3600000L)
     }

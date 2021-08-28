@@ -6,4 +6,5 @@ import org.osmdroid.util.GeoPoint
 
 class RoutingViewModel : ViewModel() {
     var startPoint = MutableLiveData<GeoPoint>()
+    var endPoint = MutableLiveData<GeoPoint>()
 }

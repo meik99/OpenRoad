@@ -6,6 +6,9 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
+    def localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
     defaultConfig {
         applicationId "com.rynkbit.openroad"
         minSdkVersion 23
@@ -18,6 +21,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "TEST_START_ADDRESS", "\"" + localProperties['test.start_address'] + "\"")
+            buildConfigField("String", "TEST_END_ADDRESS", "\"" + localProperties['test.end_address'] + "\"")
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

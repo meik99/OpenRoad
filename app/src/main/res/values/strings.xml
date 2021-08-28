@@ -13,4 +13,5 @@
     <string name="clear_start_text">Clear start text</string>
     <string name="journey_start">Journey start</string>
     <string name="start">Start</string>
+    <string name="current_location">Current location</string>
 </resources>

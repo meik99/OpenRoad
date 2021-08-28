@@ -25,7 +25,7 @@ class AddressSearch {
         executor = Executors.newSingleThreadExecutor()
     }
 
-    fun onPause() {
+    fun onStop() {
         executor.shutdown()
     }
 
@@ -40,7 +40,7 @@ class AddressSearch {
     }
 
     private fun getRoadsForQuery(query: String) {
-        executor.execute {
+        executor.submit {
             val geocoder = GeocoderNominatim(
                 Locale.getDefault(),
                 USER_AGENT
@@ -50,43 +50,3 @@ class AddressSearch {
         }
     }
 }
-
-//
-//        btnCalcRoute.setOnClickListener {
-//            val begin = editBegin.text.toString()
-//            val end = editEnd.text.toString()
-//
-//            Executors.newSingleThreadExecutor().execute {
-//                try {
-//                    val geocoder =  GeocoderNominatim(
-//                        Locale.getDefault(),
-//                        "OpenRoad"
-//                    )
-//
-//                    val beginAddresses = geocoder.getFromLocationName(begin, 10)
-//                    val endAddresses = geocoder.getFromLocationName(end, 10)
-//
-//                    if (beginAddresses.isNotEmpty() && endAddresses.isNotEmpty()) {
-//                        val waypoints = arrayListOf(
-//                            GeoPoint(beginAddresses[0].latitude, beginAddresses[0].longitude),
-//                            GeoPoint(endAddresses[0].latitude, endAddresses[0].longitude)
-//                        )
-//
-//                        val roadManager = OSRMRoadManager(requireContext())
-//                        val roads = roadManager.getRoad(waypoints)
-//
-//                        if (roads != null) {
-//                            val roadOverlay = RoadManager.buildRoadOverlay(roads)
-//                            map.mapView.overlays.add(roadOverlay)
-//
-//                            requireActivity().runOnUiThread {
-//                                map.mapView.invalidate()
-//                            }
-//                        }
-//                    }
-//                }catch (e: IOException) {
-//                    Log.e(TAG, "onViewCreated: ${e.message}", e)
-//                }
-//            }
-//
-//        }

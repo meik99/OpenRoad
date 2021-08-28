@@ -27,5 +27,10 @@
         android:id="@+id/setEndFragment"
         android:name="com.rynkbit.openroad.ui.routing.SetEndFragment"
         android:label="set_end_fragment"
-        tools:layout="@layout/set_end_fragment" />
+        tools:layout="@layout/set_end_fragment" >
+        <action
+            android:id="@+id/action_setEndFragment_to_mapView"
+            app:destination="@id/mapView" >
+        </action>
+    </fragment>
 </navigation>

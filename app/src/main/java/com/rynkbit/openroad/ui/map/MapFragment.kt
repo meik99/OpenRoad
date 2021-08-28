@@ -1,9 +1,5 @@
 package com.rynkbit.openroad.ui.map
 
-import android.content.res.ColorStateList
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.ColorFilter
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -12,16 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
 import com.rynkbit.openroad.R
 import kotlinx.android.synthetic.main.map_fragment.*
+import org.osmdroid.bonuspack.routing.Road
+import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.config.Configuration
+import org.osmdroid.views.overlay.Overlay
 
 
 class MapFragment : Fragment() {
@@ -63,9 +59,19 @@ class MapFragment : Fragment() {
         fabCenter.setOnClickListener {
             locationCallback.toggleCenter()
             if (locationCallback.isCentering) {
-                fabCenter.drawable.setTint(resources.getColor(R.color.colorPrimaryDark, requireContext().theme))
+                fabCenter.drawable.setTint(
+                    resources.getColor(
+                        R.color.colorPrimaryDark,
+                        requireContext().theme
+                    )
+                )
             } else {
-                fabCenter.drawable.setTint(resources.getColor(R.color.colorIconDefault, requireContext().theme))
+                fabCenter.drawable.setTint(
+                    resources.getColor(
+                        R.color.colorIconDefault,
+                        requireContext().theme
+                    )
+                )
             }
         }
 
@@ -73,6 +79,42 @@ class MapFragment : Fragment() {
             Navigation
                 .findNavController(requireActivity(), R.id.nav_host_fragment)
                 .navigate(R.id.action_mapView_to_setStartFragment)
+        }
+
+        viewModel.routes.observe(viewLifecycleOwner) {
+            showRoads(it)
+        }
+    }
+
+    private fun showRoads(roads: Array<Road>) {
+        val roadOverlays = mutableListOf<Overlay>()
+        for (road in roads) {
+            if (roadOverlays.isEmpty()) {
+                roadOverlays.add(
+                    RoadManager.buildRoadOverlay(
+                        road,
+                        resources.getColor(R.color.colorPrimaryDark, requireContext().theme),
+                        10f
+                    )
+                )
+            } else {
+                roadOverlays.add(
+                    RoadManager.buildRoadOverlay(
+                        road,
+                        resources.getColor(android.R.color.darker_gray, requireContext().theme),
+                        10f
+                    )
+                )
+            }
+        }
+        roadOverlays.reverse()
+
+        map.mapView.overlays.removeAll(viewModel.roadOverlays)
+        viewModel.roadOverlays = roadOverlays
+        map.mapView.overlays.addAll(roadOverlays)
+
+        requireActivity().runOnUiThread {
+            map.mapView.invalidate()
         }
     }
 
@@ -108,7 +150,7 @@ class MapFragment : Fragment() {
 
     private fun setInitialLocation() {
         val fusedLocationClient =
-                LocationServices.getFusedLocationProviderClient(requireContext())
+            LocationServices.getFusedLocationProviderClient(requireContext())
         try {
             val locationRequest = LocationRequest.create()
             locationRequest.interval = 500

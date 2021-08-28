@@ -39,20 +39,20 @@ class SetStartFragment : Fragment() {
         fabSetEndpoint.isEnabled = false
 
         viewModel.startPoint.observe(viewLifecycleOwner) {
-            fabSetEndpoint.isEnabled = viewModel.startPoint.value != null
+            fabSetEndpoint.isEnabled = mapViewModel.currentLocation != null || addressListAdapter.addresses.isNotEmpty()
         }
 
         addressSearch.addresses.observe(viewLifecycleOwner) {
             addressListAdapter.addresses = it
+            fabSetEndpoint.isEnabled = mapViewModel.currentLocation != null || addressListAdapter.addresses.isNotEmpty()
         }
 
         addressListAdapter.selectedAddress.observe(viewLifecycleOwner) {
             editStart.setText(it.formatDisplayName())
-            viewModel.startPoint.postValue(GeoPoint(it.latitude, it.longitude))
         }
 
         mapViewModel.currentLocation?.let {
-            editStart.setText(resources.getString(R.string.longitude_latitude, it.longitude, it.latitude))
+            editStart.setText(resources.getString(R.string.current_location))
             viewModel.startPoint.postValue(it)
         }
 
@@ -65,15 +65,13 @@ class SetStartFragment : Fragment() {
         }
 
         fabSetEndpoint.setOnClickListener {
+            if (addressListAdapter.addresses.isNotEmpty()) {
+                val address = addressListAdapter.addresses[0]
+                viewModel.startPoint.postValue(GeoPoint(address.latitude, address.longitude))
+            }
             Navigation
                 .findNavController(requireActivity(), R.id.nav_host_fragment)
                 .navigate(R.id.action_setStartFragment_to_setEndFragment)
-        }
-
-        fabCancel.setOnClickListener {
-            Navigation
-                .findNavController(requireActivity(), R.id.nav_host_fragment)
-                .popBackStack()
         }
     }
 
@@ -82,9 +80,9 @@ class SetStartFragment : Fragment() {
         addressSearch.onResume()
     }
 
-    override fun onPause() {
-        super.onPause()
-        addressSearch.onPause()
+    override fun onStop() {
+        super.onStop()
+        addressSearch.onStop()
     }
 }
 
