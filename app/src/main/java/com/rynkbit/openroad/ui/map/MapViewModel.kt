@@ -1,7 +1,8 @@
 package com.rynkbit.openroad.ui.map
 
 import androidx.lifecycle.ViewModel
+import org.osmdroid.util.GeoPoint
 
 class MapViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+    var currentLocation: GeoPoint? = null
 }

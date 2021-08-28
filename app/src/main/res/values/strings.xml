@@ -4,4 +4,13 @@
     <string name="begin">Begin</string>
     <string name="end">End</string>
     <string name="route">Route</string>
+    <string name="create_route">Create route</string>
+    <string name="center">Center</string>
+    <string name="cancel">Cancel</string>
+    <string name="set_end_point">Set end point</string>
+    <string name="search_start_point">Search start point</string>
+    <string name="longitude_latitude">Lo: %.3f, La: %.3f</string>
+    <string name="clear_start_text">Clear start text</string>
+    <string name="journey_start">Journey start</string>
+    <string name="start">Start</string>
 </resources>
