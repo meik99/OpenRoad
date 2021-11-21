@@ -26,6 +26,8 @@ class RouteCalculator(private val context: Context) {
         Executors.newSingleThreadExecutor().submit {
             val waypoints = arrayListOf(start, end)
             val roadManager = OSRMRoadManager(context)
+            roadManager.setService("http://10.0.2.2:5000/route/v1/driving/")
+            roadManager.addRequestOption("exclude=motorway")
             val roads = roadManager.getRoads(waypoints)
 
             alternativeRoadsData.postValue(roads)
