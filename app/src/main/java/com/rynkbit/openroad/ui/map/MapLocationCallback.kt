@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import com.rynkbit.openroad.ui.map.location.LocationMarker
 import org.osmdroid.util.GeoPoint
 
 class MapLocationCallback(val map: Map, val marker: LocationMarker): LocationCallback() {

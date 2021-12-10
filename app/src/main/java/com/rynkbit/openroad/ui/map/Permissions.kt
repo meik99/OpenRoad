@@ -5,7 +5,7 @@ import android.content.pm.PackageManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 
-class Permissions(val fragment: Fragment) {
+class Permissions(private val fragment: Fragment) {
     fun interface PermissionsListener {
         fun onGranted()
     }

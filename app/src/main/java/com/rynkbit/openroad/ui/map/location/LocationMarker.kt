@@ -1,4 +1,4 @@
-package com.rynkbit.openroad.ui.map
+package com.rynkbit.openroad.ui.map.location
 
 import android.graphics.drawable.Drawable
 import org.osmdroid.views.MapView

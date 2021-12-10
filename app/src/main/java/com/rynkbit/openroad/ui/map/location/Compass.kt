@@ -1,4 +1,4 @@
-package com.rynkbit.openroad.ui.map
+package com.rynkbit.openroad.ui.map.location
 
 import android.content.Context
 import android.hardware.Sensor
