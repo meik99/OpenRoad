@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,8 +15,10 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.rynkbit.openroad.ui.drive.DriveScreen
 import com.rynkbit.openroad.ui.map.MapScreen
 import com.rynkbit.openroad.ui.theme.OpenRoadTheme
+import com.rynkbit.openroad.ui.trip.TripScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +61,8 @@ fun Navigation() {
         navController = navController,
         startDestination = "map"
     ) {
-        composable("map") { MapScreen() }
+        composable("map") { MapScreen(navController) }
+        composable("drive") { DriveScreen(navController) }
+        composable("trip") { TripScreen(navController) }
     }
 }
